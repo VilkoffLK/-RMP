@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- Настройка для правильного отображения на мобильных телефонах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polyglot — Изучение языков</title>
+
+    <style>
+        /* === БАЗОВЫЕ СТИЛИ === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #222222; /* Темный фон вокруг телефона на компьютере */
+            color: #1E1E2C;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Контейнер мобильного приложения (на телефоне занимает весь экран, на ПК — по центру) */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background-color: #F8F8FC;
+            position: relative;
+            padding-bottom: 95px; /* Отступ снизу для нижнего меню */
+            overflow-x: hidden;
+        }
+
+        /* Верхняя полоска статуса как на айфоне (время и иконки) */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px 8px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1E1E2C;
+        }
+
+        .status-icons {
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        /* Общий класс для всех экранов */
+        .screen {
+            padding: 16px 20px;
+        }
+
+        /* === ЭКРАН 1: ВЫБОР ЯЗЫКА (HOME) === */
+        .home-title {
+            color: #6347F9;
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+
+        .home-subtitle {
+            color: #6E6E77;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 24px;
+        }
+
+        /* Карточка выбора языка на главном экране */
+        .lang-card {
+            background-color: #FFFFFF;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+            cursor: pointer;
+            border: 1.5px solid #EAE8F8;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Активная карточка с фиолетовой рамкой как в Фигме */
+        .lang-card.active-card {
+            border-color: #6347F9;
+        }
+
+        .flag-box {
+            width: 48px;
+            height: 48px;
+            background-color: #F2F0FF;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .lang-info {
+            flex-grow: 1;
+        }
+
+        .lang-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .lang-native {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1E1E2C;
+        }
+
+        .lang-english {
+            font-size: 12px;
+            color: #8E8E93;
+        }
+
+        .lang-bottom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .progress-bar-bg {
+            width: 82%;
+            height: 6px;
+            background-color: #EAE8F8;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #6347F9;
+            border-radius: 10px;
+        }
+
+        .progress-percent {
+            font-size: 11px;
+            color: #6E6E77;
+            font-weight: 600;
+        }
+
+        .lang-arrow {
+            color: #8E8E93;
+            font-size: 16px;
+            margin-left: 12px;
+            font-weight: bold;
+        }
+
+        /* === ШАПКА С КНОПКОЙ НАЗАД (ДЛЯ УРОКОВ И КАРТОЧЕК) === */
+        .top-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background-color: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #1E1E2C;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1E1E2C;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            color: #8E8E93;
+            margin-top: 2px;
+        }
+
+        /* === ЭКРАН 2: ИЗУЧЕНИЕ ЯЗЫКА (ВКЛАДКИ И СЕТКА КАРТОЧЕК) === */
+        .tabs-row {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #EAE8F8;
+            margin-bottom: 14px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #8E8E93;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #6347F9;
+            font-weight: 700;
+            border-bottom: 2px solid #6347F9;
+        }
+
+        .course-progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .course-progress-row .progress-bar-bg {
+            width: 88%;
+        }
+
+        .course-progress-row .progress-percent {
+            color: #6347F9;
+        }
+
+        /* Расширенная сетка 5 колонок для Хираганы, Катаканы и Алфавита */
+        .kana-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .kana-card {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px 4px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+            border: 1px solid #EFEFF6;
+            cursor: pointer;
+        }
+
+        .kana-card:active {
+            border-color: #6347F9;
+            background-color: #F5F3FF;
+        }
+
+        .kana-char {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1E1E2C;
+            margin-bottom: 6px;
+        }
+
+        .kana-romaji {
+            font-size: 12px;
+            color: #8E8E93;
+        }
+
+        /* Расширенные карточки Кандзи и Слов */
+        .kanji-card {
+            background-color: #FFFFFF;
+            border-radius: 18px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            border: 1px solid #EFEFF6;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .kanji-icon-box {
+            width: 48px;
+            height: 48px;
+            background-color: #EEECFF;
+            color: #6347F9;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .kanji-details {
+            flex-grow: 1;
+        }
+
+        .kanji-meaning {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1E1E2C;
+            margin-bottom: 4px;
+        }
+
+        .kanji-example {
+            font-size: 12px;
+            color: #8E8E93;
+            line-height: 1.3;
+        }
+
+        .kanji-reading {
+            font-size: 12px;
+            color: #6347F9;
+            font-weight: 600;
+            margin-left: 8px;
+            align-self: flex-start;
+        }
+
+        /* === ЭКРАН 3: РАСШИРЕННЫЕ КАРТОЧКИ (FLASHCARDS) === */
+        .flashcard-box {
+            background-color: #FFFFFF;
+            border-radius: 24px;
+            width: 100%;
+            min-height: 340px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 18px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            text-align: center;
+        }
+
+        .flashcard-front-border {
+            border: 2px solid #6347F9;
+        }
+
+        .flashcard-back-border {
+            border: 1.5px solid #EAE8F8;
+        }
+
+        .big-kanji {
+            font-size: 88px;
+            font-weight: 700;
+            color: #1E1E2C;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        /* Если слово длинное (например, на белорусском), делаем шрифт аккуратным */
+        .big-kanji.long-word {
+            font-size: 46px;
+        }
+
+        .card-romaji {
+            font-size: 18px;
+            color: #6347F9;
+            font-weight: 500;
+        }
+
+        .emoji-box {
+            width: 68px;
+            height: 68px;
+            background-color: #F7F7FA;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .card-translation {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1E1E2C;
+            margin-bottom: 10px;
+        }
+
+        .card-subtext {
+            font-size: 15px;
+            color: #6E6E77;
+            line-height: 1.4;
+        }
+
+        .tap-hint {
+            text-align: center;
+            font-size: 13px;
+            color: #8E8E93;
+            margin-bottom: 24px;
+        }
+
+        .card-counter {
+            text-align: center;
+            font-size: 13px;
+            color: #6347F9;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .circle-buttons-row {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .circle-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle-btn.gray {
+            background-color: #F0F0F7;
+            color: #1E1E2C;
+        }
+
+        .circle-btn.purple {
+            background-color: #6347F9;
+            color: #FFFFFF;
+        }
+
+        /* Кнопки на обратной стороне карточки */
+        .answer-buttons-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .answer-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #FFFFFF;
+        }
+
+        .btn-review-again {
+            border: 1.5px solid #DCDCE5;
+            color: #1E1E2C;
+        }
+
+        .btn-got-it {
+            background-color: #EEFBF4;
+            border: 1.5px solid #2EB872;
+            color: #2EB872;
+        }
+
+        /* === ЭКРАН 4: ПРОФИЛЬ (PROFILE) === */
+        .profile-header {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 24px;
+        }
+
+        .avatar-circle {
+            width: 68px;
+            height: 68px;
+            background-color: #E8E5FF;
+            color: #6347F9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 12px auto;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1E1E2C;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            color: #8E8E93;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #8E8E93;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 8px 4px;
+        }
+
+        .settings-group {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #F0F0F7;
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid #F4F4F8;
+            font-size: 14px;
+            color: #1E1E2C;
+            cursor: pointer;
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .settings-right {
+            color: #8E8E93;
+            font-size: 13px;
+        }
+
+        .settings-value {
+            color: #6347F9;
+            font-weight: 500;
+            margin-right: 6px;
+        }
+
+        /* === НИЖНЕЕ МЕНЮ НАВИГАЦИИ === */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 420px;
+            background-color: #FFFFFF;
+            border-top: 1px solid #EAEAEA;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 18px 0;
+            z-index: 10;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8E8E93;
+            font-size: 11px;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: #6347F9;
+            font-weight: 600;
+        }
+
+        /* === МОДАЛЬНОЕ ОКНО ВЫБОРА ЯЗЫКА ПРИЛОЖЕНИЯ === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            background-color: rgba(30, 30, 44, 0.5);
+            display: none; /* Скрыто по умолчанию */
+            align-items: flex-end;
+            z-index: 20;
+        }
+
+        .modal-sheet {
+            width: 100%;
+            background-color: #FFFFFF;
+            border-radius: 24px 24px 0 0;
+            padding: 12px 20px 28px 20px;
+        }
+
+        .modal-handle {
+            width: 36px;
+            height: 4px;
+            background-color: #E0E0E6;
+            border-radius: 4px;
+            margin: 0 auto 16px auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #F2F2F7;
+            border: none;
+            font-size: 16px;
+            color: #6E6E77;
+            cursor: pointer;
+        }
+
+        .lang-option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 0;
+            border-bottom: 1px solid #F4F4F8;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .lang-option-sub {
+            color: #8E8E93;
+            margin-left: 4px;
+        }
+
+        /* Кружок радио-кнопки */
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1.5px solid #DCDCE5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radio-circle.selected {
+            border: 6px solid #6347F9;
+        }
+
+        .done-btn {
+            width: 100%;
+            background-color: #6347F9;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 14px;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 18px;
+            cursor: pointer;
+        }
+
+        /* Кнопка перехода к карточкам внутри курса */
+        .practice-btn {
+            width: 100%;
+            background-color: #6347F9;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 14px;
+            padding: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Статус-бар мобильного телефона -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <span class="status-icons">•••  WiFi 🔋</span>
+        </div>
+
+        <!-- ==========================================
+             ЭКРАН 1: ВЫБОР ЯЗЫКА (HOME)
+             ========================================== -->
+        <div id="screen-home" class="screen">
+            <h1 class="home-title">Polyglot</h1>
+            <p id="home-subtitle-text" class="home-subtitle">Which language would you like to learn<br>today?</p>
+
+            <!-- Карточка Японского языка (первым делом открывает Hiragana) -->
+            <div class="lang-card active-card" onclick="openJapaneseCourse()">
+                <div class="flag-box">🇯🇵</div>
+                <div class="lang-info">
+                    <div class="lang-top-row">
+                        <span class="lang-native">日本語</span>
+                        <span id="home-jp-label" class="lang-english">Japanese</span>
+                    </div>
+                    <div class="lang-bottom-row">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 32%;"></div>
+                        </div>
+                        <span class="progress-percent">32%</span>
+                    </div>
+                </div>
+                <div class="lang-arrow">&gt;</div>
+            </div>
+
+            <!-- Карточка Белорусского языка (открывает полностью белорусский экран) -->
+            <div class="lang-card" onclick="openBelarusianCourse()">
+                <div class="flag-box">🇧🇾</div>
+                <div class="lang-info">
+                    <div class="lang-top-row">
+                        <span class="lang-native">Беларуская</span>
+                        <span id="home-by-label" class="lang-english">Belarusian</span>
+                    </div>
+                    <div class="lang-bottom-row">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 12%;"></div>
+                        </div>
+                        <span class="progress-percent">12%</span>
+                    </div>
+                </div>
+                <div class="lang-arrow">&gt;</div>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             ЭКРАН 2: ИЗУЧЕНИЕ ЯПОНСКОГО (ПЕРВЫМ ОТКРЫВАЕТСЯ HIRAGANA)
+             ========================================== -->
+        <div id="screen-japanese" class="screen" style="display: none;">
+            <!-- Шапка экрана -->
+            <div class="top-header">
+                <button class="back-btn" onclick="showScreen('screen-home')">&lt;</button>
+                <div>
+                    <div class="header-title">日本語 (Japanese)</div>
+                    <div id="course-subtitle" class="header-subtitle">Hiragana Course • Level 1</div>
+                </div>
+            </div>
+
+            <!-- Вкладки: Hiragana (активна по умолчанию) / Katakana / Kanji -->
+            <div class="tabs-row">
+                <button id="btn-tab-hiragana" class="tab-btn active" onclick="switchJapaneseTab('hiragana')">Hiragana</button>
+                <button id="btn-tab-katakana" class="tab-btn" onclick="switchJapaneseTab('katakana')">Katakana</button>
+                <button id="btn-tab-kanji" class="tab-btn" onclick="switchJapaneseTab('kanji')">Kanji</button>
+            </div>
+
+            <!-- Полоска прогресса 32% -->
+            <div class="course-progress-row">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 32%;"></div>
+                </div>
+                <span class="progress-percent">32%</span>
+            </div>
+
+            <!-- СОДЕРЖИМОЕ ВКЛАДКИ 1: HIRAGANA (Открыта по умолчанию, 25 символов) -->
+            <div id="tab-content-hiragana" class="kana-grid">
+                <!-- Ряд 1 (a, i, u, e, o) -->
+                <div class="kana-card"><div class="kana-char">あ</div><div class="kana-romaji">a</div></div>
+                <div class="kana-card"><div class="kana-char">い</div><div class="kana-romaji">i</div></div>
+                <div class="kana-card"><div class="kana-char">う</div><div class="kana-romaji">u</div></div>
+                <div class="kana-card"><div class="kana-char">え</div><div class="kana-romaji">e</div></div>
+                <div class="kana-card"><div class="kana-char">お</div><div class="kana-romaji">o</div></div>
+                <!-- Ряд 2 (ka, ki, ku, ke, ko) -->
+                <div class="kana-card"><div class="kana-char">か</div><div class="kana-romaji">ka</div></div>
+                <div class="kana-card"><div class="kana-char">き</div><div class="kana-romaji">ki</div></div>
+                <div class="kana-card"><div class="kana-char">く</div><div class="kana-romaji">ku</div></div>
+                <div class="kana-card"><div class="kana-char">け</div><div class="kana-romaji">ke</div></div>
+                <div class="kana-card"><div class="kana-char">こ</div><div class="kana-romaji">ko</div></div>
+                <!-- Ряд 3 (sa, shi, su, se, so) -->
+                <div class="kana-card"><div class="kana-char">さ</div><div class="kana-romaji">sa</div></div>
+                <div class="kana-card"><div class="kana-char">し</div><div class="kana-romaji">shi</div></div>
+                <div class="kana-card"><div class="kana-char">す</div><div class="kana-romaji">su</div></div>
+                <div class="kana-card"><div class="kana-char">せ</div><div class="kana-romaji">se</div></div>
+                <div class="kana-card"><div class="kana-char">そ</div><div class="kana-romaji">so</div></div>
+                <!-- Ряд 4 (ta, chi, tsu, te, to) -->
+                <div class="kana-card"><div class="kana-char">た</div><div class="kana-romaji">ta</div></div>
+                <div class="kana-card"><div class="kana-char">ち</div><div class="kana-romaji">chi</div></div>
+                <div class="kana-card"><div class="kana-char">つ</div><div class="kana-romaji">tsu</div></div>
+                <div class="kana-card"><div class="kana-char">て</div><div class="kana-romaji">te</div></div>
+                <div class="kana-card"><div class="kana-char">と</div><div class="kana-romaji">to</div></div>
+                <!-- Ряд 5 (na, ni, nu, ne, no) -->
+                <div class="kana-card"><div class="kana-char">な</div><div class="kana-romaji">na</div></div>
+                <div class="kana-card"><div class="kana-char">に</div><div class="kana-romaji">ni</div></div>
+                <div class="kana-card"><div class="kana-char">ぬ</div><div class="kana-romaji">nu</div></div>
+                <div class="kana-card"><div class="kana-char">ね</div><div class="kana-romaji">ne</div></div>
+                <div class="kana-card"><div class="kana-char">の</div><div class="kana-romaji">no</div></div>
+            </div>
+
+            <!-- СОДЕРЖИМОЕ ВКЛАДКИ 2: KATAKANA (Сетка символов Катаканы, 25 символов) -->
+            <div id="tab-content-katakana" class="kana-grid" style="display: none;">
+                <!-- Ряд 1 -->
+                <div class="kana-card"><div class="kana-char">ア</div><div class="kana-romaji">a</div></div>
+                <div class="kana-card"><div class="kana-char">イ</div><div class="kana-romaji">i</div></div>
+                <div class="kana-card"><div class="kana-char">ウ</div><div class="kana-romaji">u</div></div>
+                <div class="kana-card"><div class="kana-char">エ</div><div class="kana-romaji">e</div></div>
+                <div class="kana-card"><div class="kana-char">オ</div><div class="kana-romaji">o</div></div>
+                <!-- Ряд 2 -->
+                <div class="kana-card"><div class="kana-char">カ</div><div class="kana-romaji">ka</div></div>
+                <div class="kana-card"><div class="kana-char">キ</div><div class="kana-romaji">ki</div></div>
+                <div class="kana-card"><div class="kana-char">ク</div><div class="kana-romaji">ku</div></div>
+                <div class="kana-card"><div class="kana-char">ケ</div><div class="kana-romaji">ke</div></div>
+                <div class="kana-card"><div class="kana-char">コ</div><div class="kana-romaji">ko</div></div>
+                <!-- Ряд 3 -->
+                <div class="kana-card"><div class="kana-char">サ</div><div class="kana-romaji">sa</div></div>
+                <div class="kana-card"><div class="kana-char">シ</div><div class="kana-romaji">shi</div></div>
+                <div class="kana-card"><div class="kana-char">ス</div><div class="kana-romaji">su</div></div>
+                <div class="kana-card"><div class="kana-char">セ</div><div class="kana-romaji">se</div></div>
+                <div class="kana-card"><div class="kana-char">ソ</div><div class="kana-romaji">so</div></div>
+                <!-- Ряд 4 -->
+                <div class="kana-card"><div class="kana-char">タ</div><div class="kana-romaji">ta</div></div>
+                <div class="kana-card"><div class="kana-char">チ</div><div class="kana-romaji">chi</div></div>
+                <div class="kana-card"><div class="kana-char">ツ</div><div class="kana-romaji">tsu</div></div>
+                <div class="kana-card"><div class="kana-char">テ</div><div class="kana-romaji">te</div></div>
+                <div class="kana-card"><div class="kana-char">ト</div><div class="kana-romaji">to</div></div>
+                <!-- Ряд 5 -->
+                <div class="kana-card"><div class="kana-char">ナ</div><div class="kana-romaji">na</div></div>
+                <div class="kana-card"><div class="kana-char">ニ</div><div class="kana-romaji">ni</div></div>
+                <div class="kana-card"><div class="kana-char">ヌ</div><div class="kana-romaji">nu</div></div>
+                <div class="kana-card"><div class="kana-char">ネ</div><div class="kana-romaji">ne</div></div>
+                <div class="kana-card"><div class="kana-char">ノ</div><div class="kana-romaji">no</div></div>
+            </div>
+
+            <!-- СОДЕРЖИМОЕ ВКЛАДКИ 3: KANJI (Расширенный список слов с иероглифами) -->
+            <div id="tab-content-kanji" style="display: none;">
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">山</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Mountain</div>
+                        <div class="kanji-example">富士山 Fujisan = Mt. Fuji</div>
+                    </div>
+                    <div class="kanji-reading">yama</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">水</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Water</div>
+                        <div class="kanji-example">お水 Omizu = Cold drinking water</div>
+                    </div>
+                    <div class="kanji-reading">mizu</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">食</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Eat / Food</div>
+                        <div class="kanji-example">食べ物 Tabemono = Food</div>
+                    </div>
+                    <div class="kanji-reading">ta-beru</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">人</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Person</div>
+                        <div class="kanji-example">日本人 Nihonjin = Japanese person</div>
+                    </div>
+                    <div class="kanji-reading">hito</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">日</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Sun / Day</div>
+                        <div class="kanji-example">日曜日 Nichiyoubi = Sunday</div>
+                    </div>
+                    <div class="kanji-reading">hi / nichi</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">火</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Fire</div>
+                        <div class="kanji-example">花火 Hanabi = Fireworks</div>
+                    </div>
+                    <div class="kanji-reading">hi / ka</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">木</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Tree / Wood</div>
+                        <div class="kanji-example">木曜日 Mokuyoubi = Thursday</div>
+                    </div>
+                    <div class="kanji-reading">ki / moku</div>
+                </div>
+            </div>
+
+            <!-- Кнопка перехода к японским карточкам -->
+            <button class="practice-btn" onclick="openFlashcards('jp')">Practice Flashcards (10 cards)</button>
+        </div>
+
+
+        <!-- ==========================================
+             ЭКРАН 2B: ИЗУЧЕНИЕ БЕЛОРУССКОГО (ВСЁ НА БЕЛАРУСКАЙ МОВЕ)
+             ========================================== -->
+        <div id="screen-belarusian" class="screen" style="display: none;">
+            <!-- Шапка экрана на белорусском -->
+            <div class="top-header">
+                <button class="back-btn" onclick="showScreen('screen-home')">&lt;</button>
+                <div>
+                    <div class="header-title">Беларуская мова</div>
+                    <div id="bel-course-subtitle" class="header-subtitle">Алфавіт • Узровень 1</div>
+                </div>
+            </div>
+
+            <!-- Вкладки на белорусском: Алфавіт / Словы / Фразы -->
+            <div class="tabs-row">
+                <button id="btn-bel-alphabet" class="tab-btn active" onclick="switchBelarusianTab('alphabet')">Алфавіт</button>
+                <button id="btn-bel-words" class="tab-btn" onclick="switchBelarusianTab('words')">Словы</button>
+                <button id="btn-bel-phrases" class="tab-btn" onclick="switchBelarusianTab('phrases')">Фразы</button>
+            </div>
+
+            <!-- Полоска прогресса 12% -->
+            <div class="course-progress-row">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 12%;"></div>
+                </div>
+                <span class="progress-percent">12%</span>
+            </div>
+
+            <!-- ВКЛАДКА 1: БЕЛОРУССКИЙ АЛФАВИТ (Алфавіт — 25 літар) -->
+            <div id="tab-bel-alphabet" class="kana-grid">
+                <!-- Ряд 1 -->
+                <div class="kana-card"><div class="kana-char">А</div><div class="kana-romaji">а</div></div>
+                <div class="kana-card"><div class="kana-char">Б</div><div class="kana-romaji">бэ</div></div>
+                <div class="kana-card"><div class="kana-char">В</div><div class="kana-romaji">вэ</div></div>
+                <div class="kana-card"><div class="kana-char">Г</div><div class="kana-romaji">гэ</div></div>
+                <div class="kana-card"><div class="kana-char">Ґ</div><div class="kana-romaji">г выбух.</div></div>
+                <!-- Ряд 2 -->
+                <div class="kana-card"><div class="kana-char">Д</div><div class="kana-romaji">дэ</div></div>
+                <div class="kana-card"><div class="kana-char">Е</div><div class="kana-romaji">е</div></div>
+                <div class="kana-card"><div class="kana-char">Ё</div><div class="kana-romaji">ё</div></div>
+                <div class="kana-card"><div class="kana-char">Ж</div><div class="kana-romaji">жэ</div></div>
+                <div class="kana-card"><div class="kana-char">З</div><div class="kana-romaji">зэ</div></div>
+                <!-- Ряд 3 -->
+                <div class="kana-card"><div class="kana-char">І</div><div class="kana-romaji">і</div></div>
+                <div class="kana-card"><div class="kana-char">Й</div><div class="kana-romaji">йот</div></div>
+                <div class="kana-card"><div class="kana-char">К</div><div class="kana-romaji">ка</div></div>
+                <div class="kana-card"><div class="kana-char">Л</div><div class="kana-romaji">эл</div></div>
+                <div class="kana-card"><div class="kana-char">М</div><div class="kana-romaji">эм</div></div>
+                <!-- Ряд 4 -->
+                <div class="kana-card"><div class="kana-char">Н</div><div class="kana-romaji">эн</div></div>
+                <div class="kana-card"><div class="kana-char">О</div><div class="kana-romaji">о</div></div>
+                <div class="kana-card"><div class="kana-char">П</div><div class="kana-romaji">пэ</div></div>
+                <div class="kana-card"><div class="kana-char">Р</div><div class="kana-romaji">эр</div></div>
+                <div class="kana-card"><div class="kana-char">С</div><div class="kana-romaji">эс</div></div>
+                <!-- Ряд 5 -->
+                <div class="kana-card"><div class="kana-char">Т</div><div class="kana-romaji">тэ</div></div>
+                <div class="kana-card"><div class="kana-char">У</div><div class="kana-romaji">у</div></div>
+                <div class="kana-card"><div class="kana-char">Ў</div><div class="kana-romaji">у нескл.</div></div>
+                <div class="kana-card"><div class="kana-char">Ф</div><div class="kana-romaji">эф</div></div>
+                <div class="kana-card"><div class="kana-char">Х</div><div class="kana-romaji">ха</div></div>
+            </div>
+
+            <!-- ВКЛАДКА 2: БЕЛОРУССКИЕ СЛОВА (Словы) -->
+            <div id="tab-bel-words" style="display: none;">
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">🏠</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Дом / Хата</div>
+                        <div class="kanji-example">Родная хата = Бацькоўскі дом</div>
+                    </div>
+                    <div class="kanji-reading">хата</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">💧</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Вада</div>
+                        <div class="kanji-example">Крынічная вада = Чыстая пітная вада</div>
+                    </div>
+                    <div class="kanji-reading">вада</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">🍞</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Ежа / Страва</div>
+                        <div class="kanji-example">Смачная ежа = Нацыянальная страва</div>
+                    </div>
+                    <div class="kanji-reading">ежа</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">🧑</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Чалавек</div>
+                        <div class="kanji-example">Добры чалавек = Шчыры беларус</div>
+                    </div>
+                    <div class="kanji-reading">людзі</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">☀️</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Сонца / Дзень</div>
+                        <div class="kanji-example">Сонечны дзень = Нядзеля (выхадны)</div>
+                    </div>
+                    <div class="kanji-reading">сонца</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">🌳</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Дрэва / Лес</div>
+                        <div class="kanji-example">Зялёны дуб = Старое дрэва ў лесе</div>
+                    </div>
+                    <div class="kanji-reading">дрэва</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">🌾</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Радзіма / Зямля</div>
+                        <div class="kanji-example">Любая Беларусь = Родная старонка</div>
+                    </div>
+                    <div class="kanji-reading">краіна</div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 3: БЕЛОРУССКИЕ ФРАЗЫ (Фразы) -->
+            <div id="tab-bel-phrases" style="display: none;">
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">👋</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Прывітанне!</div>
+                        <div class="kanji-example">Добрай раніцы / Добры дзень</div>
+                    </div>
+                    <div class="kanji-reading">вітанне</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">🙏</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Вялікі дзякуй</div>
+                        <div class="kanji-example">Дзякуй за вашу дапамогу і цеплыню</div>
+                    </div>
+                    <div class="kanji-reading">падзяка</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">✨</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Калі ласка</div>
+                        <div class="kanji-example">Праходзьце і сядайце, калі ласка</div>
+                    </div>
+                    <div class="kanji-reading">ветлівасць</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">🤝</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Да пабачэння</div>
+                        <div class="kanji-example">Да хуткай сустрэчы, дарагі сябар!</div>
+                    </div>
+                    <div class="kanji-reading">развітанне</div>
+                </div>
+
+                <div class="kanji-card">
+                    <div class="kanji-icon-box">❤️</div>
+                    <div class="kanji-details">
+                        <div class="kanji-meaning">Як твае справы?</div>
+                        <div class="kanji-example">Усё добра, шчыра дзякую!</div>
+                    </div>
+                    <div class="kanji-reading">размова</div>
+                </div>
+            </div>
+
+            <!-- Кнопка перехода к белорусским карточкам -->
+            <button class="practice-btn" onclick="openFlashcards('by')">Практыкаваць карткі (10 картак)</button>
+        </div>
+
+
+        <!-- ==========================================
+             ЭКРАН 3: РАСШИРЕННЫЕ КАРТОЧКИ (FLASHCARDS / КАРТКІ)
+             ========================================== -->
+        <div id="screen-flashcards" class="screen" style="display: none;">
+            <!-- Шапка -->
+            <div class="top-header">
+                <button class="back-btn" onclick="goBackFromFlashcards()">&lt;</button>
+                <div>
+                    <div id="fc-header-title" class="header-title">Flashcards</div>
+                    <div id="fc-header-subtitle" class="header-subtitle">日本語 (Japanese) • Vocab Practice</div>
+                </div>
+            </div>
+
+            <!-- ЛИЦЕВАЯ СТОРОНА КАРТОЧКИ (card-front) -->
+            <div id="card-front">
+                <div class="flashcard-box flashcard-front-border" onclick="flipCard('back')">
+                    <div id="fc-front-word" class="big-kanji">猫</div>
+                    <div id="fc-front-romaji" class="card-romaji">neko</div>
+                </div>
+
+                <div id="fc-tap-hint" class="tap-hint">Tap to flip</div>
+                <div id="fc-counter-front" class="card-counter">1 of 10</div>
+
+                <!-- Кнопки переключения карточек назад (<) и вперед (>) -->
+                <div class="circle-buttons-row">
+                    <button class="circle-btn gray" onclick="prevFlashcard()">&lt;</button>
+                    <button class="circle-btn purple" onclick="nextFlashcard()">&gt;</button>
+                </div>
+            </div>
+
+            <!-- ОБРАТНАЯ СТОРОНА КАРТОЧКИ (card-back) -->
+            <div id="card-back" style="display: none;">
+                <div class="flashcard-box flashcard-back-border" onclick="flipCard('front')">
+                    <div id="fc-back-emoji" class="emoji-box">🐱</div>
+                    <div id="fc-back-translation" class="card-translation">Cat</div>
+                    <div id="fc-back-subtext" class="card-subtext">猫 (neko)</div>
+                </div>
+
+                <div class="answer-buttons-row">
+                    <button id="fc-btn-again" class="answer-btn btn-review-again" onclick="nextFlashcard()">Review again</button>
+                    <button id="fc-btn-gotit" class="answer-btn btn-got-it" onclick="nextFlashcard()">Got it!</button>
+                </div>
+
+                <div id="fc-counter-back" class="card-counter">1 of 10</div>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             ЭКРАН 4: ПРОФИЛЬ (PROFILE)
+             ========================================== -->
+        <div id="screen-profile" class="screen" style="display: none;">
+            <div class="profile-header">
+                <div class="avatar-circle">A</div>
+                <div class="profile-name">Andrei</div>
+                <div class="profile-email">ndrjkrpk@gmail.com</div>
+            </div>
+
+            <div id="prof-sec-account" class="section-label">ACCOUNT</div>
+            <div class="settings-group">
+                <div class="settings-row">
+                    <span id="prof-edit">Edit Profile</span>
+                    <span class="settings-right">&gt;</span>
+                </div>
+                <div class="settings-row">
+                    <span id="prof-notif">Notifications</span>
+                    <span class="settings-right">&gt;</span>
+                </div>
+                <div class="settings-row">
+                    <span id="prof-privacy">Privacy</span>
+                    <span class="settings-right">&gt;</span>
+                </div>
+            </div>
+
+            <div id="prof-sec-learning" class="section-label">LEARNING</div>
+            <div class="settings-group">
+                <div class="settings-row">
+                    <span id="prof-goal">Daily Goal</span>
+                    <div>
+                        <span id="prof-goal-val" class="settings-value">15 min/day</span>
+                        <span class="settings-right">&gt;</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <span id="prof-rem">Reminders</span>
+                    <div>
+                        <span id="prof-rem-val" class="settings-value">On</span>
+                        <span class="settings-right">&gt;</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <span id="prof-stats">Statistics</span>
+                    <span class="settings-right">&gt;</span>
+                </div>
+            </div>
+
+            <div id="prof-sec-pref" class="section-label">PREFERENCES</div>
+            <div class="settings-group">
+                <!-- При нажатии открывается модальное окно выбора языка -->
+                <div class="settings-row" onclick="openLanguageModal()">
+                    <span id="prof-applang">App Language</span>
+                    <div>
+                        <span id="selected-app-lang" class="settings-value">English</span>
+                        <span class="settings-right">&gt;</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <span id="prof-about">About</span>
+                    <span class="settings-right">&gt;</span>
+                </div>
+                <div class="settings-row">
+                    <span id="prof-logout">Log Out</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             МОДАЛЬНОЕ ОКНО: ВЫБОР ЯЗЫКА (APP LANGUAGE)
+             ========================================== -->
+        <div id="modal-language" class="modal-overlay">
+            <div class="modal-sheet">
+                <div class="modal-handle"></div>
+                <div class="modal-header">
+                    <span id="modal-lang-title" class="modal-title">App Language</span>
+                    <button class="modal-close" onclick="closeLanguageModal()">×</button>
+                </div>
+
+                <!-- Список языков -->
+                <div class="lang-option-row" onclick="chooseLanguage('English', 0)">
+                    <div><b>English</b> <span class="lang-option-sub">(English)</span></div>
+                    <div id="radio-0" class="radio-circle selected"></div>
+                </div>
+
+                <div class="lang-option-row" onclick="chooseLanguage('Русский', 1)">
+                    <div><b>Русский</b> <span class="lang-option-sub">(Russian)</span></div>
+                    <div id="radio-1" class="radio-circle"></div>
+                </div>
+
+                <div class="lang-option-row" onclick="chooseLanguage('Беларуская', 2)">
+                    <div><b>Беларуская</b> <span class="lang-option-sub">(Belarusian)</span></div>
+                    <div id="radio-2" class="radio-circle"></div>
+                </div>
+
+                <div class="lang-option-row" onclick="chooseLanguage('日本語', 3)">
+                    <div><b>日本語</b> <span class="lang-option-sub">(Japanese)</span></div>
+                    <div id="radio-3" class="radio-circle"></div>
+                </div>
+
+                <div class="lang-option-row" onclick="chooseLanguage('Deutsch', 4)">
+                    <div><b>Deutsch</b> <span class="lang-option-sub">(German)</span></div>
+                    <div id="radio-4" class="radio-circle"></div>
+                </div>
+
+                <div class="lang-option-row" onclick="chooseLanguage('한국어', 5)">
+                    <div><b>한국어</b> <span class="lang-option-sub">(Korean)</span></div>
+                    <div id="radio-5" class="radio-circle"></div>
+                </div>
+
+                <button id="modal-done-btn" class="done-btn" onclick="closeLanguageModal()">Done</button>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ
+             ========================================== -->
+        <div class="bottom-nav">
+            <button id="nav-learn" class="nav-item active" onclick="showScreen('screen-home')">
+                <span class="nav-icon">📖</span>
+                <span id="nav-text-learn">Learn</span>
+            </button>
+
+            <button id="nav-review" class="nav-item" onclick="showScreen('screen-flashcards')">
+                <span class="nav-icon">🗂️</span>
+                <span id="nav-text-review">Review</span>
+            </button>
+
+            <button id="nav-leaderboard" class="nav-item" onclick="openActiveCourse()">
+                <span class="nav-icon">🏆</span>
+                <span id="nav-text-leaderboard">Leaderboard</span>
+            </button>
+
+            <button id="nav-profile" class="nav-item" onclick="showScreen('screen-profile')">
+                <span class="nav-icon">👤</span>
+                <span id="nav-text-profile">Profile</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+         ПРОСТОЙ JAVASCRIPT ДЛЯ ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ И КАРТОЧЕК
+         ========================================== -->
+    <script>
+        // Переменная для запоминания выбранного курса ('jp' или 'by')
+        var currentCourse = 'jp';
+
+        // Индекс текущей открытой карточки (начинаем с 0, то есть с 1-й карточки)
+        var currentCardIndex = 0;
+
+        // Расширенный список карточек для Японского языка (10 штук)
+        var japaneseCards = [
+            { word: '猫', romaji: 'neko', emoji: '🐱', translation: 'Cat', subtext: '猫 (neko)' },
+            { word: '犬', romaji: 'inu', emoji: '🐶', translation: 'Dog', subtext: '犬 (inu)' },
+            { word: '水', romaji: 'mizu', emoji: '💧', translation: 'Water', subtext: 'お水 (omizu)' },
+            { word: '山', romaji: 'yama', emoji: '⛰️', translation: 'Mountain', subtext: '富士山 (Fujisan)' },
+            { word: '食', romaji: 'taberu', emoji: '🍱', translation: 'Eat / Food', subtext: '食べ物 (tabemono)' },
+            { word: '人', romaji: 'hito', emoji: '🧑', translation: 'Person', subtext: '日本人 (nihonjin)' },
+            { word: '日', romaji: 'hi / nichi', emoji: '☀️', translation: 'Sun / Day', subtext: '日曜日 (nichiyoubi)' },
+            { word: '火', romaji: 'hi / ka', emoji: '🔥', translation: 'Fire', subtext: '花火 (hanabi)' },
+            { word: '木', romaji: 'ki', emoji: '🌳', translation: 'Tree / Wood', subtext: '木曜日 (mokuyoubi)' },
+            { word: '本', romaji: 'hon', emoji: '📖', translation: 'Book', subtext: '日本語の本 (nihongo no hon)' }
+        ];
+
+        // Расширенный список карточек для Белорусского языка (10 штук, всё на белорусском)
+        var belarusianCards = [
+            { word: 'Кот', romaji: 'назоўнік • жывёла', emoji: '🐱', translation: 'Хатні пухнаты гадаванец', subtext: 'Чорны кот муркоча на канапе' },
+            { word: 'Сабака', romaji: 'назоўнік • жывёла', emoji: '🐶', translation: 'Верны сябар чалавека', subtext: 'Сабака ахоўвае родны дом' },
+            { word: 'Вада', romaji: 'назоўнік • прырода', emoji: '💧', translation: 'Чыстая крынічная вадкасць', subtext: 'Халодная пітная вада з калодзежа' },
+            { word: 'Сонца', romaji: 'назоўнік • неба', emoji: '☀️', translation: 'Яркая зорка, якая дае цяпло', subtext: 'Ранішняе сонца свеціць у акно' },
+            { word: 'Хлеб', romaji: 'назоўнік • ежа', emoji: '🍞', translation: 'Духмяная выпечка з мукі', subtext: 'Свежы жытні хлеб на стале' },
+            { word: 'Кніга', romaji: 'назоўнік • веды', emoji: '📖', translation: 'Твор друку для чытання', subtext: 'Цікавая беларуская кніга' },
+            { word: 'Хата', romaji: 'назоўнік • будынак', emoji: '🏠', translation: 'Родны бацькоўскі дом', subtext: 'Утульная і цёплая вясковая хата' },
+            { word: 'Дрэва', romaji: 'назоўнік • расліна', emoji: '🌳', translation: 'Шматгадовая расліна з галінамі', subtext: 'Высокае зялёнае дрэва ў лесе' },
+            { word: 'Сям’я', romaji: 'назоўнік • людзі', emoji: '👨‍👩‍👧', translation: 'Блізкія і родныя людзі', subtext: 'Вялікая і дружная сям’я' },
+            { word: 'Радзіма', romaji: 'назоўнік • краіна', emoji: '🌾', translation: 'Родная зямля і бацькаўшчына', subtext: 'Любая сэрцу Беларусь' }
+        ];
+
+        // 1. Функция для переключения между основными экранами
+        function showScreen(screenId) {
+            // Скрываем все экраны
+            document.getElementById('screen-home').style.display = 'none';
+            document.getElementById('screen-japanese').style.display = 'none';
+            document.getElementById('screen-belarusian').style.display = 'none';
+            document.getElementById('screen-flashcards').style.display = 'none';
+            document.getElementById('screen-profile').style.display = 'none';
+
+            // Показываем нужный экран
+            document.getElementById(screenId).style.display = 'block';
+
+            // Обновляем подсветку кнопок в нижнем меню
+            document.getElementById('nav-learn').className = 'nav-item';
+            document.getElementById('nav-review').className = 'nav-item';
+            document.getElementById('nav-leaderboard').className = 'nav-item';
+            document.getElementById('nav-profile').className = 'nav-item';
+
+            if (screenId === 'screen-home' || screenId === 'screen-japanese' || screenId === 'screen-belarusian') {
+                document.getElementById('nav-learn').className = 'nav-item active';
+            } else if (screenId === 'screen-flashcards') {
+                document.getElementById('nav-review').className = 'nav-item active';
+            } else if (screenId === 'screen-profile') {
+                document.getElementById('nav-profile').className = 'nav-item active';
+            }
+        }
+
+        // Открытие курса Японского языка (ВСЕГДА сначала открывается Hiragana)
+        function openJapaneseCourse() {
+            currentCourse = 'jp';
+            currentCardIndex = 0;
+            setNavigationLanguage('en');
+            switchJapaneseTab('hiragana'); // Первым выходит Hiragana!
+            renderCurrentFlashcard();
+            showScreen('screen-japanese');
+        }
+
+        // Открытие курса Белорусского языка (включает белорусский интерфейс)
+        function openBelarusianCourse() {
+            currentCourse = 'by';
+            currentCardIndex = 0;
+            setNavigationLanguage('by');
+            switchBelarusianTab('alphabet');
+            renderCurrentFlashcard();
+            showScreen('screen-belarusian');
+        }
+
+        // Открытие текущего выбранного курса
+        function openActiveCourse() {
+            if (currentCourse === 'by') {
+                showScreen('screen-belarusian');
+            } else {
+                showScreen('screen-japanese');
+            }
+        }
+
+        // Переход к карточкам определенного языка
+        function openFlashcards(lang) {
+            currentCourse = lang;
+            currentCardIndex = 0;
+            renderCurrentFlashcard();
+            flipCard('front');
+            showScreen('screen-flashcards');
+        }
+
+        // Кнопка "Назад" на экране карточек
+        function goBackFromFlashcards() {
+            if (currentCourse === 'by') {
+                showScreen('screen-belarusian');
+            } else {
+                showScreen('screen-japanese');
+            }
+        }
+
+        // 2. Функция для переключения вкладок Японского: Hiragana, Katakana и Kanji
+        function switchJapaneseTab(tabName) {
+            // Убираем активный класс у всех вкладок
+            document.getElementById('btn-tab-hiragana').className = 'tab-btn';
+            document.getElementById('btn-tab-katakana').className = 'tab-btn';
+            document.getElementById('btn-tab-kanji').className = 'tab-btn';
+
+            // Скрываем все 3 блока с содержимым
+            document.getElementById('tab-content-hiragana').style.display = 'none';
+            document.getElementById('tab-content-katakana').style.display = 'none';
+            document.getElementById('tab-content-kanji').style.display = 'none';
+
+            if (tabName === 'hiragana') {
+                // Показываем сетку Хираганы (あ, い, う, え, お...)
+                document.getElementById('btn-tab-hiragana').className = 'tab-btn active';
+                document.getElementById('tab-content-hiragana').style.display = 'grid';
+                document.getElementById('course-subtitle').innerText = 'Hiragana Course • Level 1';
+            } else if (tabName === 'katakana') {
+                // Показываем сетку Катаканы (ア, イ, ウ, エ, オ...)
+                document.getElementById('btn-tab-katakana').className = 'tab-btn active';
+                document.getElementById('tab-content-katakana').style.display = 'grid';
+                document.getElementById('course-subtitle').innerText = 'Katakana Course • Level 1';
+            } else if (tabName === 'kanji') {
+                // Показываем список Кандзи (山, 水, 食, 人, 日, 火, 木)
+                document.getElementById('btn-tab-kanji').className = 'tab-btn active';
+                document.getElementById('tab-content-kanji').style.display = 'block';
+                document.getElementById('course-subtitle').innerText = 'Kanji Course • Level 1';
+            }
+        }
+
+        // 3. Функция для переключения вкладок Белорусского: Алфавіт, Словы, Фразы
+        function switchBelarusianTab(tabName) {
+            document.getElementById('btn-bel-alphabet').className = 'tab-btn';
+            document.getElementById('btn-bel-words').className = 'tab-btn';
+            document.getElementById('btn-bel-phrases').className = 'tab-btn';
+
+            document.getElementById('tab-bel-alphabet').style.display = 'none';
+            document.getElementById('tab-bel-words').style.display = 'none';
+            document.getElementById('tab-bel-phrases').style.display = 'none';
+
+            if (tabName === 'alphabet') {
+                document.getElementById('btn-bel-alphabet').className = 'tab-btn active';
+                document.getElementById('tab-bel-alphabet').style.display = 'grid';
+                document.getElementById('bel-course-subtitle').innerText = 'Алфавіт • Узровень 1';
+            } else if (tabName === 'words') {
+                document.getElementById('btn-bel-words').className = 'tab-btn active';
+                document.getElementById('tab-bel-words').style.display = 'block';
+                document.getElementById('bel-course-subtitle').innerText = 'Словы • Узровень 1';
+            } else if (tabName === 'phrases') {
+                document.getElementById('btn-bel-phrases').className = 'tab-btn active';
+                document.getElementById('tab-bel-phrases').style.display = 'block';
+                document.getElementById('bel-course-subtitle').innerText = 'Фразы • Узровень 1';
+            }
+        }
+
+        // 4. Отрисовка текущей карточки из массива (Японского или Белорусского)
+        function renderCurrentFlashcard() {
+            var deck = (currentCourse === 'by') ? belarusianCards : japaneseCards;
+            var card = deck[currentCardIndex];
+            var total = deck.length;
+            var number = currentCardIndex + 1;
+
+            var wordElement = document.getElementById('fc-front-word');
+            wordElement.innerText = card.word;
+
+            // Если слово длиннее 2 символов (например, белорусское слово), подбираем удобный размер шрифта
+            if (card.word.length > 2) {
+                wordElement.className = 'big-kanji long-word';
+            } else {
+                wordElement.className = 'big-kanji';
+            }
+
+            document.getElementById('fc-front-romaji').innerText = card.romaji;
+            document.getElementById('fc-back-emoji').innerText = card.emoji;
+            document.getElementById('fc-back-translation').innerText = card.translation;
+            document.getElementById('fc-back-subtext').innerText = card.subtext;
+
+            if (currentCourse === 'by') {
+                document.getElementById('fc-header-title').innerText = 'Карткі';
+                document.getElementById('fc-header-subtitle').innerText = 'Беларуская мова • Практыка слоў';
+                document.getElementById('fc-tap-hint').innerText = 'Націсніце на картку, каб перавярнуць';
+                document.getElementById('fc-counter-front').innerText = number + ' з ' + total;
+                document.getElementById('fc-counter-back').innerText = number + ' з ' + total;
+                document.getElementById('fc-btn-again').innerText = 'Паўтарыць яшчэ';
+                document.getElementById('fc-btn-gotit').innerText = 'Зразумела!';
+            } else {
+                document.getElementById('fc-header-title').innerText = 'Flashcards';
+                document.getElementById('fc-header-subtitle').innerText = '日本語 (Japanese) • Vocab Practice';
+                document.getElementById('fc-tap-hint').innerText = 'Tap to flip';
+                document.getElementById('fc-counter-front').innerText = number + ' of ' + total;
+                document.getElementById('fc-counter-back').innerText = number + ' of ' + total;
+                document.getElementById('fc-btn-again').innerText = 'Review again';
+                document.getElementById('fc-btn-gotit').innerText = 'Got it!';
+            }
+        }
+
+        // Переключение на следующую карточку (кнопка > или Got it!)
+        function nextFlashcard() {
+            var deck = (currentCourse === 'by') ? belarusianCards : japaneseCards;
+            currentCardIndex = currentCardIndex + 1;
+            if (currentCardIndex >= deck.length) {
+                currentCardIndex = 0; // Возвращаемся к первой карточке после последней
+            }
+            renderCurrentFlashcard();
+            flipCard('front');
+        }
+
+        // Переключение на предыдущую карточку (кнопка <)
+        function prevFlashcard() {
+            var deck = (currentCourse === 'by') ? belarusianCards : japaneseCards;
+            currentCardIndex = currentCardIndex - 1;
+            if (currentCardIndex < 0) {
+                currentCardIndex = deck.length - 1; // Переходим к последней карточке
+            }
+            renderCurrentFlashcard();
+            flipCard('front');
+        }
+
+        // 5. Функция для переворота карточки (Flashcard)
+        function flipCard(side) {
+            if (side === 'back') {
+                document.getElementById('card-front').style.display = 'none';
+                document.getElementById('card-back').style.display = 'block';
+            } else {
+                document.getElementById('card-front').style.display = 'block';
+                document.getElementById('card-back').style.display = 'none';
+            }
+        }
+
+        // 6. Перевод нижнего меню и интерфейса (Английский / Белорусский)
+        function setNavigationLanguage(lang) {
+            if (lang === 'by') {
+                document.getElementById('nav-text-learn').innerText = 'Вучыць';
+                document.getElementById('nav-text-review').innerText = 'Паўтарэнне';
+                document.getElementById('nav-text-leaderboard').innerText = 'Рэйтынг';
+                document.getElementById('nav-text-profile').innerText = 'Профіль';
+
+                document.getElementById('home-subtitle-text').innerHTML = 'Якую мову вы хочаце вывучаць<br>сёння?';
+                document.getElementById('home-jp-label').innerText = 'Японская';
+                document.getElementById('home-by-label').innerText = 'Беларуская';
+
+                document.getElementById('prof-sec-account').innerText = 'АКАЎНТ';
+                document.getElementById('prof-edit').innerText = 'Рэдагаваць профіль';
+                document.getElementById('prof-notif').innerText = 'Апавяшчэнні';
+                document.getElementById('prof-privacy').innerText = 'Прыватнасць';
+                document.getElementById('prof-sec-learning').innerText = 'НАВУЧАННЕ';
+                document.getElementById('prof-goal').innerText = 'Штодзённая мэта';
+                document.getElementById('prof-goal-val').innerText = '15 хв/дзень';
+                document.getElementById('prof-rem').innerText = 'Напаміны';
+                document.getElementById('prof-rem-val').innerText = 'Укл';
+                document.getElementById('prof-stats').innerText = 'Статыстыка';
+                document.getElementById('prof-sec-pref').innerText = 'НАЛАДЫ';
+                document.getElementById('prof-applang').innerText = 'Мова праграмы';
+                document.getElementById('prof-about').innerText = 'Пра праграму';
+                document.getElementById('prof-logout').innerText = 'Выйсці';
+                document.getElementById('modal-lang-title').innerText = 'Мова праграмы';
+                document.getElementById('modal-done-btn').innerText = 'Гатова';
+            } else {
+                document.getElementById('nav-text-learn').innerText = 'Learn';
+                document.getElementById('nav-text-review').innerText = 'Review';
+                document.getElementById('nav-text-leaderboard').innerText = 'Leaderboard';
+                document.getElementById('nav-text-profile').innerText = 'Profile';
+
+                document.getElementById('home-subtitle-text').innerHTML = 'Which language would you like to learn<br>today?';
+                document.getElementById('home-jp-label').innerText = 'Japanese';
+                document.getElementById('home-by-label').innerText = 'Belarusian';
+
+                document.getElementById('prof-sec-account').innerText = 'ACCOUNT';
+                document.getElementById('prof-edit').innerText = 'Edit Profile';
+                document.getElementById('prof-notif').innerText = 'Notifications';
+                document.getElementById('prof-privacy').innerText = 'Privacy';
+                document.getElementById('prof-sec-learning').innerText = 'LEARNING';
+                document.getElementById('prof-goal').innerText = 'Daily Goal';
+                document.getElementById('prof-goal-val').innerText = '15 min/day';
+                document.getElementById('prof-rem').innerText = 'Reminders';
+                document.getElementById('prof-rem-val').innerText = 'On';
+                document.getElementById('prof-stats').innerText = 'Statistics';
+                document.getElementById('prof-sec-pref').innerText = 'PREFERENCES';
+                document.getElementById('prof-applang').innerText = 'App Language';
+                document.getElementById('prof-about').innerText = 'About';
+                document.getElementById('prof-logout').innerText = 'Log Out';
+                document.getElementById('modal-lang-title').innerText = 'App Language';
+                document.getElementById('modal-done-btn').innerText = 'Done';
+            }
+        }
+
+        // 7. Функции для открытия и закрытия модального окна выбора языка
+        function openLanguageModal() {
+            document.getElementById('modal-language').style.display = 'flex';
+        }
+
+        function closeLanguageModal() {
+            document.getElementById('modal-language').style.display = 'none';
+        }
+
+        // 8. Функция выбора языка в модальном окне
+        function chooseLanguage(langName, index) {
+            // Записываем выбранный язык в профиль
+            document.getElementById('selected-app-lang').innerText = langName;
+
+            // Сбрасываем все кружки радио-кнопок
+            for (var i = 0; i < 6; i++) {
+                document.getElementById('radio-' + i).className = 'radio-circle';
+            }
+
+            // Закрашиваем выбранный кружок
+            document.getElementById('radio-' + index).className = 'radio-circle selected';
+
+            // Если выбран белорусский язык — переводим интерфейс на белорусский
+            if (langName === 'Беларуская') {
+                currentCourse = 'by';
+                setNavigationLanguage('by');
+                renderCurrentFlashcard();
+            } else {
+                currentCourse = 'jp';
+                setNavigationLanguage('en');
+                renderCurrentFlashcard();
+            }
+        }
+    </script>
+</body>
+</html>
